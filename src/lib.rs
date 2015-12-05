@@ -1,4 +1,5 @@
 
+#[derive(Clone, PartialEq)]
 pub enum Cell {
     Unknown,
     Black,
@@ -26,6 +27,9 @@ impl Picross {
     pub fn parse(data: &mut Iterator<Item=&str>) -> Picross {
         let height = Picross::get_integer(data.next(), "height");
         let length = Picross::get_integer(data.next(), "length");
+
+        let cells = vec![vec![Cell::Unknown; length]; height];
+
         Picross {
             height: height,
             length: length,
@@ -33,7 +37,7 @@ impl Picross {
             row_spec: vec![],
             col_spec: vec![],
 
-            cells: vec![],
+            cells: cells,
         }
     }
 }
@@ -47,4 +51,5 @@ fn it_works() {
     let picross = Picross::parse(&mut data.into_iter());
     assert!(picross.height == 42);
     assert!(picross.length == 24);
+    assert!(picross.cells[37][13] == Cell::Unknown);
 }
