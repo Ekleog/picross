@@ -16,10 +16,19 @@ pub struct Picross {
 }
 
 impl Picross {
+    fn get_integer(data: Option<&str>, name: &str) -> usize {
+        match data {
+            None    => panic!("Expected to find a {}!", name),
+            Some(x) => x.parse().ok().expect(&format!("Expected integer {}!", name))
+        }
+    }
+
     pub fn parse(data: &mut Iterator<Item=&str>) -> Picross {
+        let height = Picross::get_integer(data.next(), "height");
+        let length = Picross::get_integer(data.next(), "length");
         Picross {
-            height: 0,
-            length: 0,
+            height: height,
+            length: length,
 
             row_spec: vec![],
             col_spec: vec![],
@@ -31,5 +40,11 @@ impl Picross {
 
 #[test]
 fn it_works() {
-    let _ = Picross { height: 0, length: 0, cells: vec![], };
+    let data = vec![
+        "42",
+        "24",
+    ];
+    let picross = Picross::parse(&mut data.into_iter());
+    assert!(picross.height == 42);
+    assert!(picross.length == 24);
 }
