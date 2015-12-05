@@ -9,6 +9,8 @@ pub struct Picross {
     pub height: usize,
     pub length: usize,
 
+    pub row_spec: Vec<Vec<usize>>, // row_spec[y] contains the list of hints for row y, from left to right
+    pub col_spec: Vec<Vec<usize>>, // col_spec[x] contains the list of hints for col x, from top to bottom
 
     pub cells: Vec<Vec<Cell>>, // Used as cells[y][x]
 }
@@ -18,6 +20,10 @@ impl Picross {
         Picross {
             height: 0,
             length: 0,
+
+            row_spec: vec![],
+            col_spec: vec![],
+
             cells: vec![],
         }
     }
