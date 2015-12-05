@@ -1,19 +1,20 @@
 
-enum Cell {
+pub enum Cell {
     Unknown,
     Black,
     White,
 }
 
-struct Picross {
-    height: usize,
-    length: usize,
+pub struct Picross {
+    pub height: usize,
+    pub length: usize,
 
-    cells: Vec<Vec<Cell>>, // Used as cells[y][x]
+
+    pub cells: Vec<Vec<Cell>>, // Used as cells[y][x]
 }
 
 impl Picross {
-    fn parse(string: &str) -> Picross {
+    pub fn parse(data: &mut Iterator<Item=&str>) -> Picross {
         Picross {
             height: 0,
             length: 0,
