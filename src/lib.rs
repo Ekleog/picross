@@ -24,32 +24,67 @@ impl Picross {
         }
     }
 
+    fn get_specs(s: &str) -> Vec<usize> {
+        vec![]
+    }
+
+    fn fill_specs(size: usize, specs: &mut Vec<Vec<usize>>, data: &mut Iterator<Item=&str>) {
+        for _ in 0..size {
+            specs.push(Picross::get_specs(data.next().expect("Wrong number of specifications!")));
+        }
+    }
+
     pub fn parse(data: &mut Iterator<Item=&str>) -> Picross {
-        let height = Picross::get_integer(data.next(), "height");
-        let length = Picross::get_integer(data.next(), "length");
-
-        let cells = vec![vec![Cell::Unknown; length]; height];
-
-        Picross {
-            height: height,
-            length: length,
+        let mut res = Picross {
+            height: 0,
+            length: 0,
 
             row_spec: vec![],
             col_spec: vec![],
 
-            cells: cells,
-        }
+            cells: vec![],
+        };
+
+        res.height = Picross::get_integer(data.next(), "height");
+        res.length = Picross::get_integer(data.next(), "length");
+
+        res.cells = vec![vec![Cell::Unknown; res.length]; res.height];
+
+        Picross::fill_specs(res.height, &mut res.row_spec, data);
+        Picross::fill_specs(res.length, &mut res.col_spec, data);
+
+        res
     }
 }
 
 #[test]
 fn it_works() {
     let data = vec![
-        "42",
-        "24",
+        "9",
+        "9",
+        "[3,3]",
+        "[1,1]",
+        "[1,1]",
+        "[1,1]",
+        "[1]",
+        "[1,1]",
+        "[1,1]",
+        "[1,1]",
+        "[3,3]",
+        "[1,1]",
+        "[2,2]",
+        "[1,1,1,1]",
+        "[1,1]",
+        "[1]",
+        "[1,1]",
+        "[1,1,1,1]",
+        "[2,2]",
+        "[1,1]",
     ];
     let picross = Picross::parse(&mut data.into_iter());
-    assert!(picross.height == 42);
-    assert!(picross.length == 24);
-    assert!(picross.cells[37][13] == Cell::Unknown);
+    assert!(picross.height == 9);
+    assert!(picross.length == 9);
+    assert!(picross.cells[3][4] == Cell::Unknown);
+    assert!(picross.row_spec[2] == vec![1, 1]);
+    assert!(picross.col_spec[7] == vec![2, 2]);
 }
