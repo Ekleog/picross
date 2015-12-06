@@ -122,7 +122,35 @@ pub struct Picross {
 }
 
 impl Picross {
-    fn get_integer(data: Option<&str>, name: &str) -> usize {
+    ///
+    /// /!\ Intended for internal use only /!\
+    ///
+    /// Returns an integer parsed from data
+    ///
+    /// # Panics
+    ///
+    /// Panics if `data` is not actually a `Some(&str)` representing an integer, with `name`
+    /// in the error message to make things clearer.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// assert_eq!(42, picross::Picross::get_integer(Some("42"), "test"));
+    /// ```
+    ///
+    /// The following will panic:
+    ///
+    /// ```should_panic
+    /// picross::Picross::get_integer(None, "testing number");
+    /// // With error message "Expected to find a testing number!"
+    /// ```
+    ///
+    /// ```should_panic
+    /// picross::Picross::get_integer(Some("not an integer"), "stuff");
+    /// // With error message "Expected integer stuff!"
+    /// ```
+    ///
+    pub fn get_integer(data: Option<&str>, name: &str) -> usize {
         match data {
             None    => panic!("Expected to find a {}!", name),
             Some(x) => x.parse().ok().expect(&format!("Expected integer {}!", name))
