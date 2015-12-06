@@ -157,7 +157,42 @@ impl Picross {
         }
     }
 
-    fn get_specs(s: &str) -> Vec<usize> {
+    ///
+    /// /!\ Intended for internal use only /!\
+    ///
+    /// Parses `s` according to the format [1,2,4...]
+    ///
+    /// # Panics
+    ///
+    /// Panics if `s` is not in the format [1,2,3...]
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// assert_eq!(picross::Picross::get_specs("[2,1]"), vec![2, 1]);
+    /// assert_eq!(picross::Picross::get_specs("[42]"), vec![42]);
+    /// assert_eq!(picross::Picross::get_specs("[]"), vec![]);
+    /// ```
+    ///
+    /// The following lines will all trigger a panic:
+    ///
+    /// ```should_panic
+    /// picross::Picross::get_specs("[");
+    /// ```
+    ///
+    /// ```should_panic
+    /// picross::Picross::get_specs("(1,2)");
+    /// ```
+    ///
+    /// ```should_panic
+    /// picross::Picross::get_specs("[1, 2]");
+    /// ```
+    ///
+    /// ```should_panic
+    /// picross::Picross::get_specs("[a,2]");
+    /// ```
+    ///
+    pub fn get_specs(s: &str) -> Vec<usize> {
         if s.len() < 2 || s[0..1].to_string() != "[" || s[s.len() - 1 .. s.len()].to_string() != "]" {
             panic!("Expected '{}' to be of form [1,4,3...]", s);
         }
