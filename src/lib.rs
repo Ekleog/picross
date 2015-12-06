@@ -404,6 +404,40 @@ impl Picross {
              .expect("Not supporting empty picross grids!")
     }
 
+    ///
+    /// Converts a Picross grid into a String
+    ///
+    /// # Panics
+    ///
+    /// Panics if `height` or `length` is 0.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use picross::{Picross, Cell};
+    ///
+    /// let picross = Picross {
+    ///     height: 3,
+    ///     length: 3,
+    ///     row_spec: vec![vec![1, 1], vec![], vec![1]],
+    ///     col_spec: vec![vec![1, 1], vec![1], vec![2]],
+    ///     cells: vec![vec![Cell::Unknown, Cell::White  , Cell::Black],
+    ///                 vec![Cell::White  , Cell::White  , Cell::Black],
+    ///                 vec![Cell::Black  , Cell::Unknown, Cell::Unknown]],
+    /// };
+    ///
+    /// let res =
+    ///     "   |1  \n".to_string() +
+    ///     "   |   \n" +
+    ///     "   |112\n" +
+    ///     "---+---\n" +
+    ///     "1 1|? #\n" +
+    ///     "   |  #\n" +
+    ///     "  1|#??\n";
+    ///
+    /// assert!(picross.to_string() == res);
+    /// ```
+    ///
     pub fn to_string(&self) -> String {
         let row_spec = Picross::specs_to_strings(&self.row_spec);
         let col_spec = Picross::specs_to_strings(&self.col_spec);
@@ -447,26 +481,4 @@ impl Picross {
 
         res
     }
-}
-
-#[test]
-fn displaying_works() {
-    let picross = Picross {
-        height: 3,
-        length: 3,
-        row_spec: vec![vec![1, 1], vec![], vec![1]],
-        col_spec: vec![vec![1, 1], vec![1], vec![2]],
-        cells: vec![vec![Cell::Unknown, Cell::White  , Cell::Black],
-                    vec![Cell::White  , Cell::White  , Cell::Black],
-                    vec![Cell::Black  , Cell::Unknown, Cell::Unknown]],
-    };
-    let res =
-        "   |1  \n".to_string() +
-        "   |   \n" +
-        "   |112\n" +
-        "---+---\n" +
-        "1 1|? #\n" +
-        "   |  #\n" +
-        "  1|#??\n";
-    assert!(picross.to_string() == res);
 }
