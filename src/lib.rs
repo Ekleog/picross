@@ -68,7 +68,7 @@ impl Picross {
 }
 
 #[test]
-fn it_works() {
+fn parsing_works() {
     let data = vec![
         "9",
         "9",
