@@ -126,8 +126,143 @@ pub struct Picross {
 ///
 /// - parse
 /// - to_string
+/// - is_valid
 ///
 impl Picross {
+    ///
+    /// Checks if a Picross is valid
+    ///
+    /// # Examples
+    ///
+    /// Valid picross grid:
+    ///
+    /// ```
+    /// use picross::{Picross, Cell};
+    ///
+    /// let picross = Picross {
+    ///     height: 3,
+    ///     length: 3,
+    ///     cells: vec![vec![Cell::Black, Cell::Black, Cell::Black],
+    ///                 vec![Cell::White, Cell::Black, Cell::White],
+    ///                 vec![Cell::Black, Cell::White, Cell::Black]],
+    ///     row_spec: vec![vec![3], vec![1], vec![1, 1]],
+    ///     col_spec: vec![vec![1, 1], vec![2], vec![1, 1]],
+    /// };
+    ///
+    /// assert!(picross.is_valid());
+    /// ```
+    ///
+    /// Invalid picross grid with blatantly wrong dimensions:
+    ///
+    /// ```
+    /// use picross::{Picross, Cell};
+    ///
+    /// let picross = Picross {
+    ///     height: 42,
+    ///     length: 24,
+    ///     cells: vec![vec![Cell::Black]],
+    ///     row_spec: vec![vec![1]],
+    ///     col_spec: vec![vec![1]],
+    /// };
+    ///
+    /// assert!(!picross.is_valid());
+    /// ```
+    ///
+    /// Invalid picross grid, with row specifications not respected:
+    ///
+    /// ```
+    /// use picross::{Picross, Cell};
+    ///
+    /// let picross = Picross {
+    ///     height: 2,
+    ///     length: 2,
+    ///     cells: vec![vec![Cell::Black, Cell::White],
+    ///                 vec![Cell::White, Cell::Black]],
+    ///     row_spec: vec![vec![1], vec![2]],
+    ///     col_spec: vec![vec![1], vec![1]],
+    /// };
+    ///
+    /// assert!(!picross.is_valid());
+    /// ```
+    ///
+    /// Invalid picross grid, with column specifications not respected:
+    ///
+    /// ```
+    /// use picross::{Picross, Cell};
+    ///
+    /// let picross = Picross {
+    ///     height: 2,
+    ///     length: 2,
+    ///     cells: vec![vec![Cell::Black, Cell::White],
+    ///                 vec![Cell::Black, Cell::Black]],
+    ///     row_spec: vec![vec![1], vec![2]],
+    ///     col_spec: vec![vec![2], vec![2]],
+    /// };
+    ///
+    /// assert!(!picross.is_valid());
+    /// ```
+    ///
+    pub fn is_valid(&self) -> bool {
+        // Check basic consistency of `cells`
+        if self.height != self.cells.len() || self.cells.iter().any(|r| self.length != r.len()) {
+            return false;
+        }
+
+        // Check basic consistency of `(col|row)_spec`
+        if self.height != self.row_spec.len() || self.length != self.col_spec.len() {
+            return false;
+        }
+
+        // Prepare an iterator that iterates over both lines and columns, coupled to specs
+        let iter =
+            // Iterate over rows and its specs
+            self.row_spec.iter().zip(
+                self.cells.iter().cloned()
+            )
+        .chain(
+            // Then iterate over columns and its specs
+            self.col_spec.iter().zip(
+                (0..self.length).map(|x| {
+                    self.cells.iter()
+                              .map(|r| r[x].clone())
+                              .collect::<Vec<Cell>>()
+                })
+            )
+        );
+
+        // Check specs are matched
+        for (spec, line) in iter {
+            let mut num_block = 0;
+            let mut size_block = 0;
+            for c in line {
+                match c {
+                    Cell::Unknown => return false,
+                    Cell::Black   => size_block += 1,
+                    Cell::White   => {
+                        if size_block > 0 {
+                            if num_block >= spec.len() || size_block != spec[num_block] {
+                                return false;
+                            }
+                            num_block += 1;
+                            size_block = 0;
+                        }
+                    }
+                }
+            }
+            if size_block > 0 {
+                if num_block >= spec.len() || size_block != spec[num_block] {
+                    return false;
+                }
+                num_block += 1;
+            }
+            if num_block != spec.len() {
+                return false;
+            }
+        };
+
+        true
+    }
+
     ///
     /// /!\ Intended for internal use only /!\
     ///
