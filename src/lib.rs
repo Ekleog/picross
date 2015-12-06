@@ -95,6 +95,7 @@ impl Picross {
 
         let mut res: String = "".to_string();
 
+        // Write the header: column specs
         for i in 0..max_cs_len {
             res = res + &line_begin + "|";
             for c in &col_spec {
@@ -106,15 +107,21 @@ impl Picross {
             res.push('\n');
         }
 
+        // Write header separator
         res = res + &vec!["-"; max_rs_len].join("") + "+" + &vec!["-"; self.length].join("") + "\n";
 
         for i in 0..self.height {
+            // Write row specs
             res = res + &vec![" "; max_rs_len - row_spec[i].len()].join("") + &row_spec[i] + "|";
+
+            // Write actual content
             res = res + &self.cells[i].iter().map(|c| match c {
                 &Cell::Unknown => '?',
                 &Cell::White   => ' ',
                 &Cell::Black   => '#'
             }).collect::<String>();
+
+            // Okay, let's continue
             res.push('\n');
         }
 
