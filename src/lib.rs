@@ -347,7 +347,22 @@ impl Picross {
         res
     }
 
-    fn specs_to_strings(specs: &Vec<Vec<usize>>) -> Vec<String> {
+    ///
+    /// /!\ Intended for internal use only /!\
+    ///
+    /// Transforms a specification into a vector of strings that can be used to
+    /// represent the specification
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// assert_eq!(
+    ///     picross::Picross::specs_to_strings(&vec![vec![1, 2], vec![], vec![42]]),
+    ///     vec!["1 2", "", "42"]
+    /// );
+    /// ```
+    ///
+    pub fn specs_to_strings(specs: &Vec<Vec<usize>>) -> Vec<String> {
         specs.iter()
              .map(|v| {
                  v.iter()
