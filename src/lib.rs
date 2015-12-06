@@ -1,18 +1,123 @@
 
-#[derive(Clone, PartialEq)]
+/// The Cell type
+#[derive(Clone, PartialEq, Debug)]
 pub enum Cell {
     Unknown,
     Black,
     White,
 }
 
+/// A Picross board
 pub struct Picross {
+    /// Height of the board
     pub height: usize,
+    /// Length of the board
     pub length: usize,
 
-    pub row_spec: Vec<Vec<usize>>, // row_spec[y] contains the list of hints for row y, from left to right
-    pub col_spec: Vec<Vec<usize>>, // col_spec[x] contains the list of hints for col x, from top to bottom
+    ///
+    /// Specifications for the rows of the board
+    ///
+    /// # Examples
+    ///
+    /// The board
+    ///
+    /// ```text
+    ///    |1212
+    /// ---+----
+    /// 2 1|## #
+    ///   3| ###
+    /// ```
+    ///
+    /// is represented with
+    ///
+    /// ```
+    /// # use picross::{Picross, Cell};
+    /// # let picross = Picross{
+    /// #   height: 2,
+    /// #   length: 4,
+    /// #   cells: vec![vec![Cell::Black, Cell::Black, Cell::White, Cell::Black],
+    /// #               vec![Cell::White, Cell::Black, Cell::Black, Cell::Black]],
+    /// #   row_spec: vec![vec![2, 1], vec![3]],
+    /// #   col_spec: vec![vec![1], vec![2], vec![1], vec![2]],
+    /// # };
+    /// assert_eq!(picross.row_spec, vec![vec![2, 1], vec![3]]);
+    /// ```
+    ///
+    pub row_spec: Vec<Vec<usize>>,
 
+    ///
+    /// Specifications for the columns of the board
+    ///
+    /// # Examples
+    ///
+    /// The board
+    ///
+    /// ```text
+    ///  |1
+    ///  |
+    ///  |2 1
+    /// -+---
+    /// 1|#
+    /// 1|  #
+    /// 1|#
+    /// 1|#
+    /// ```
+    ///
+    /// is represented with
+    ///
+    /// ```
+    /// # use picross::{Picross, Cell};
+    /// # let picross = Picross{
+    /// #   height: 4,
+    /// #   length: 3,
+    /// #   cells: vec![vec![Cell::Black, Cell::White, Cell::White],
+    /// #               vec![Cell::White, Cell::White, Cell::Black],
+    /// #               vec![Cell::Black, Cell::White, Cell::White],
+    /// #               vec![Cell::Black, Cell::White, Cell::White]],
+    /// #   row_spec: vec![vec![1], vec![1], vec![1], vec![1]],
+    /// #   col_spec: vec![vec![1, 2], vec![], vec![1]],
+    /// # };
+    /// assert_eq!(picross.col_spec, vec![vec![1, 2], vec![], vec![1]]);
+    /// ```
+    ///
+    pub col_spec: Vec<Vec<usize>>,
+
+    ///
+    /// Status of the cells of the picross board
+    ///
+    /// # Examples
+    ///
+    /// The board
+    ///
+    /// ```text
+    ///    |2 2
+    /// ---+---
+    ///   1|#
+    /// 1 1|# #
+    ///   1|  #
+    /// ```
+    ///
+    /// is represented with
+    ///
+    /// ```
+    /// # use picross::{Picross, Cell};
+    /// # let picross = Picross{
+    /// #   height: 3,
+    /// #   length: 3,
+    /// #   cells: vec![vec![Cell::Black, Cell::White, Cell::White],
+    /// #               vec![Cell::Black, Cell::White, Cell::Black],
+    /// #               vec![Cell::White, Cell::White, Cell::Black]],
+    /// #   row_spec: vec![vec![1], vec![1, 1], vec![1]],
+    /// #   col_spec: vec![vec![2], vec![], vec![2]],
+    /// # };
+    /// assert_eq!(
+    ///     picross.cells,
+    ///     vec![vec![Cell::Black, Cell::White, Cell::White],
+    ///          vec![Cell::Black, Cell::White, Cell::Black],
+    ///          vec![Cell::White, Cell::White, Cell::Black]]
+    /// );
+    /// ```
+    ///
     pub cells: Vec<Vec<Cell>>, // Used as cells[y][x]
 }
 
