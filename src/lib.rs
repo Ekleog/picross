@@ -25,7 +25,17 @@ impl Picross {
     }
 
     fn get_specs(s: &str) -> Vec<usize> {
-        vec![]
+        if s.len() < 2 {
+            panic!("Expected '{}' to be of form [1, 4, 3...]", s);
+        }
+
+        let s = &s[1 .. s.len() - 1];
+
+        s.split(',')
+         .map(|x| x.parse::<usize>()
+                   .ok()
+                   .expect(&format!("Expected integer and found '{}' in '{}'", x, s)))
+         .collect::<Vec<usize>>()
     }
 
     fn fill_specs(size: usize, specs: &mut Vec<Vec<usize>>, data: &mut Iterator<Item=&str>) {
