@@ -373,7 +373,31 @@ impl Picross {
              .collect()
     }
 
-    fn max_len_non_empty(specs: &Vec<String>) -> usize {
+    ///
+    /// /!\ Intended for internal use only /!\
+    ///
+    /// Return the maximum length of the strings in `specs`, assuming the Picross grid
+    /// is not empty
+    ///
+    /// # Panics
+    ///
+    /// Panics if the picross grid whose `(row|col)_spec` is `specs` is empty.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// assert_eq!(
+    ///     picross::Picross::max_len_non_empty(&vec![
+    ///         "123 2".to_string(),
+    ///         "1".to_string(),
+    ///         "".to_string(),
+    ///         "124".to_string()
+    ///     ]),
+    ///     5
+    /// );
+    /// ```
+    ///
+    pub fn max_len_non_empty(specs: &Vec<String>) -> usize {
         specs.iter()
              .map(|x| x.len())
              .max()
