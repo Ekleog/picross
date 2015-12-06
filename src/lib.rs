@@ -121,6 +121,12 @@ pub struct Picross {
     pub cells: Vec<Vec<Cell>>, // Used as cells[y][x]
 }
 
+///
+/// Methods intended for public use:
+///
+/// - parse
+/// - to_string
+///
 impl Picross {
     ///
     /// /!\ Intended for internal use only /!\
