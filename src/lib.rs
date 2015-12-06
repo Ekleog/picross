@@ -130,8 +130,8 @@ impl Picross {
     }
 
     fn get_specs(s: &str) -> Vec<usize> {
-        if s.len() < 2 {
-            panic!("Expected '{}' to be of form [1, 4, 3...]", s);
+        if s.len() < 2 || s[0..1].to_string() != "[" || s[s.len() - 1 .. s.len()].to_string() != "]" {
+            panic!("Expected '{}' to be of form [1,4,3...]", s);
         }
 
         let s = &s[1 .. s.len() - 1];
