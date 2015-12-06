@@ -136,6 +136,10 @@ impl Picross {
 
         let s = &s[1 .. s.len() - 1];
 
+        if s.len() == 0 {
+            return vec![];
+        }
+
         s.split(',')
          .map(|x| x.parse::<usize>()
                    .ok()
