@@ -295,10 +295,8 @@ impl Picross {
     /// ```
     ///
     pub fn get_integer(data: Option<&str>, name: &str) -> usize {
-        match data {
-            None    => panic!("Expected to find a {}!", name),
-            Some(x) => x.parse().ok().expect(&format!("Expected integer {}!", name))
-        }
+        data.expect(&format!("Expected to find a {}!", name))
+            .parse().ok().expect(&format!("Expected integer {}!", name))
     }
 
     ///
@@ -610,10 +608,7 @@ impl Picross {
         for i in 0..max_cs_len {
             res = res + &line_begin + "|";
             for c in &col_spec {
-                res.push(match c.chars().nth(max_cs_len - i - 1) {
-                    Some(x) => x,
-                    None    => ' '
-                });
+                res.push(c.chars().nth(max_cs_len - i - 1).unwrap_or(' '));
             }
             res.push('\n');
         }
