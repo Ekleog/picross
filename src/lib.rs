@@ -353,42 +353,6 @@ impl Picross {
     }
 
     ///
-    /// /!\ Intended for internal use only /!\
-    ///
-    /// Reads a `(row|col)_spec` of `size` elements into `specs` from `data`
-    ///
-    /// # Panics
-    ///
-    /// Panics if `data` does not have at least `size` elements to give, or if one of these
-    /// elements does not comply with the `get_specs` specification.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// let mut specs = vec![];
-    /// picross::Picross::fill_specs(3, &mut specs, &mut vec!["[]", "[1,3]", "[42]"].into_iter());
-    /// assert_eq!(specs, vec![vec![], vec![1, 3], vec![42]]);
-    /// ```
-    ///
-    /// The following examples should panic:
-    ///
-    /// ```should_panic
-    /// let mut specs = vec![];
-    /// picross::Picross::fill_specs(3, &mut specs, &mut vec!["[]", "[1,3]"].into_iter());
-    /// ```
-    ///
-    /// ```should_panic
-    /// let mut specs = vec![];
-    /// picross::Picross::fill_specs(3, &mut specs, &mut vec!["[]", "blah", "[42]"].into_iter());
-    /// ```
-    ///
-    pub fn fill_specs(size: usize, specs: &mut Vec<Vec<usize>>, data: &mut Iterator<Item=&str>) {
-        for _ in 0..size {
-            specs.push(Picross::get_specs(data.next().expect("Wrong number of specifications!")));
-        }
-    }
-
-    ///
     /// Parses a Picross struct from an iterator to strings
     ///
     /// Takes in first the height, then the length, then `height` row specifications, and
@@ -491,8 +455,12 @@ impl Picross {
 
         res.cells = vec![vec![Cell::Unknown; res.length]; res.height];
 
-        Picross::fill_specs(res.height, &mut res.row_spec, data);
-        Picross::fill_specs(res.length, &mut res.col_spec, data);
+        res.row_spec = data.map(Picross::get_specs).take(res.height).collect();
+        res.col_spec = data.map(Picross::get_specs).take(res.length).collect();
+
+        if res.row_spec.len() != res.height || res.col_spec.len() != res.length {
+            panic!("Wrong number of specifications given!");
+        }
 
         res
     }
