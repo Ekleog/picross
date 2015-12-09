@@ -621,10 +621,10 @@ impl Picross {
             res = res + &vec![" "; max_rs_len - row_spec[i].len()].join("") + &row_spec[i] + "|";
 
             // Write actual content
-            res = res + &self.cells[i].iter().map(|c| match c {
-                &Cell::Unknown => '?',
-                &Cell::White   => ' ',
-                &Cell::Black   => '#'
+            res = res + &self.cells[i].iter().map(|c| match *c {
+                Cell::Unknown => '?',
+                Cell::White   => ' ',
+                Cell::Black   => '#'
             }).collect::<String>();
 
             // Okay, let's continue
