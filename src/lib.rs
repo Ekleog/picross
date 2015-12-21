@@ -1,3 +1,4 @@
+use std::borrow::Borrow;
 
 /// The Cell type
 #[derive(Clone, PartialEq, Debug)]
@@ -269,39 +270,6 @@ impl Picross {
     ///
     /// /!\ Intended for internal use only /!\
     ///
-    /// Returns an integer parsed from data
-    ///
-    /// # Panics
-    ///
-    /// Panics if `data` is not actually a `Some(&str)` representing an integer, with `name`
-    /// in the error message to make things clearer.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// assert_eq!(42, picross::Picross::get_integer(Some("42"), "test"));
-    /// ```
-    ///
-    /// The following will panic:
-    ///
-    /// ```should_panic
-    /// picross::Picross::get_integer(None, "testing number");
-    /// // With error message "Expected to find a testing number!"
-    /// ```
-    ///
-    /// ```should_panic
-    /// picross::Picross::get_integer(Some("not an integer"), "stuff");
-    /// // With error message "Expected integer stuff!"
-    /// ```
-    ///
-    pub fn get_integer(data: Option<&str>, name: &str) -> usize {
-        data.expect(&format!("Expected to find a {}!", name))
-            .parse().ok().expect(&format!("Expected integer {}!", name))
-    }
-
-    ///
-    /// /!\ Intended for internal use only /!\
-    ///
     /// Parses `s` according to the format [1,2,4...]
     ///
     /// # Panics
@@ -334,7 +302,9 @@ impl Picross {
     /// picross::Picross::get_specs("[a,2]");
     /// ```
     ///
-    pub fn get_specs(s: &str) -> Vec<usize> {
+    pub fn get_specs<T: Borrow<str>>(s: T) -> Vec<usize> {
+        let s = s.borrow();
+
         if s.len() < 2 || s[0..1].to_string() != "[" || s[s.len() - 1 .. s.len()].to_string() != "]" {
             panic!("Expected '{}' to be of form [1,4,3...]", s);
         }
@@ -439,7 +409,7 @@ impl Picross {
     /// # assert!(picross.is_valid());
     /// ```
     ///
-    pub fn parse(data: &mut Iterator<Item=&str>) -> Picross {
+    pub fn parse<T: Borrow<str>>(data: &mut Iterator<Item=T>) -> Picross {
         let mut res = Picross {
             height: 0,
             length: 0,
@@ -450,8 +420,11 @@ impl Picross {
             cells: vec![],
         };
 
-        res.height = Picross::get_integer(data.next(), "height");
-        res.length = Picross::get_integer(data.next(), "length");
+        res.height = data.next().expect("Expected to find a height!").borrow()
+            .parse().ok().expect("Expected integer height!");
+        res.length = data.next().expect("Expected to find a length!").borrow()
+            .parse().ok().expect("Expected integer length!");
+
 
         res.cells = vec![vec![Cell::Unknown; res.length]; res.height];
 
