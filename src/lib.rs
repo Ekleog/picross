@@ -135,6 +135,34 @@ pub struct Picross {
 /// - is_valid
 ///
 impl Picross {
+    ///
+    /// Transposes the cells
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use picross::{Picross, Cell};
+    ///
+    /// let mut picross = Picross {
+    ///     height: 3,
+    ///     length: 3,
+    ///     cells: vec![vec![Cell::Black, Cell::Black, Cell::Unknown],
+    ///                 vec![Cell::White, Cell::Black, Cell::White],
+    ///                 vec![Cell::Black, Cell::White, Cell::Black]],
+    ///     row_spec: vec![vec![3], vec![1], vec![1, 1]],
+    ///     col_spec: vec![vec![1, 1], vec![2], vec![1, 1]],
+    /// };
+    ///
+    /// assert_eq!(
+    ///     picross.transpose(),
+    ///     vec![vec![Cell::Black, Cell::White, Cell::Black],
+    ///          vec![Cell::Black, Cell::Black, Cell::White],
+    ///          vec![Cell::Unknown, Cell::White, Cell::Black]]
+    /// );
+    /// # picross.cells[0][2] = Cell::Black;
+    /// # assert!(picross.is_valid());
+    /// ```
+    ///
     pub fn transpose(&self) -> Vec<Vec<Cell>> {
         (0..self.length).map(|x| {
             self.cells.iter()
