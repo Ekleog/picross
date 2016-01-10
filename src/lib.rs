@@ -1,5 +1,7 @@
 use std::borrow::Borrow;
 
+pub mod display;
+
 /// The Cell type
 #[derive(Clone, PartialEq, Debug)]
 pub enum Cell {
@@ -493,85 +495,5 @@ impl Picross {
              .map(|x| x.len())
              .max()
              .expect("Not supporting empty picross grids!")
-    }
-
-    ///
-    /// Converts a Picross grid into a String
-    ///
-    /// # Panics
-    ///
-    /// Panics if `height` or `length` is 0.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// use picross::{Picross, Cell};
-    ///
-    /// let mut picross = Picross {
-    ///     height: 3,
-    ///     length: 3,
-    ///     row_spec: vec![vec![1, 1], vec![1], vec![1]],
-    ///     col_spec: vec![vec![1, 1], vec![], vec![2]],
-    ///     cells: vec![vec![Cell::Unknown, Cell::White  , Cell::Black],
-    ///                 vec![Cell::White  , Cell::White  , Cell::Black],
-    ///                 vec![Cell::Black  , Cell::Unknown, Cell::Unknown]],
-    /// };
-    ///
-    /// let res =
-    ///     "   |1  \n".to_string() +
-    ///     "   |   \n" +
-    ///     "   |1 2\n" +
-    ///     "---+---\n" +
-    ///     "1 1|? #\n" +
-    ///     "  1|  #\n" +
-    ///     "  1|#??\n";
-    ///
-    /// assert!(picross.to_string() == res);
-    ///
-    /// # picross.cells[0][0] = Cell::Black;
-    /// # picross.cells[2][1] = Cell::White;
-    /// # picross.cells[2][2] = Cell::White;
-    /// # assert!(picross.is_valid());
-    /// ```
-    ///
-    pub fn to_string(&self) -> String {
-        let row_spec = Picross::specs_to_strings(&self.row_spec);
-        let col_spec = Picross::specs_to_strings(&self.col_spec);
-
-        let max_rs_len = Picross::max_len_non_empty(&row_spec);
-        let max_cs_len = Picross::max_len_non_empty(&col_spec);
-
-        let line_begin = vec![" "; max_rs_len].join("");
-
-        let mut res: String = "".to_string();
-
-        // Write the header: column specs
-        for i in 0..max_cs_len {
-            res = res + &line_begin + "|";
-            for c in &col_spec {
-                res.push(c.chars().nth(max_cs_len - i - 1).unwrap_or(' '));
-            }
-            res.push('\n');
-        }
-
-        // Write header separator
-        res = res + &vec!["-"; max_rs_len].join("") + "+" + &vec!["-"; self.length].join("") + "\n";
-
-        for i in 0..self.height {
-            // Write row specs
-            res = res + &vec![" "; max_rs_len - row_spec[i].len()].join("") + &row_spec[i] + "|";
-
-            // Write actual content
-            res = res + &self.cells[i].iter().map(|c| match *c {
-                Cell::Unknown => '?',
-                Cell::White   => ' ',
-                Cell::Black   => '#'
-            }).collect::<String>();
-
-            // Okay, let's continue
-            res.push('\n');
-        }
-
-        res
     }
 }
