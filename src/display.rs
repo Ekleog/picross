@@ -76,29 +76,31 @@ impl Display for Picross {
     /// use picross::{Picross, Cell};
     ///
     /// let mut picross = Picross {
-    ///     height: 3,
+    ///     height: 4,
     ///     length: 3,
-    ///     row_spec: vec![vec![1, 1], vec![1], vec![1]],
-    ///     col_spec: vec![vec![1, 1], vec![], vec![2]],
+    ///     row_spec: vec![vec![1, 1], vec![1], vec![1], vec![1]],
+    ///     col_spec: vec![vec![1, 2], vec![], vec![2]],
     ///     cells: vec![vec![Cell::Unknown, Cell::White  , Cell::Black],
     ///                 vec![Cell::White  , Cell::White  , Cell::Black],
+    ///                 vec![Cell::Black  , Cell::White  , Cell::White],
     ///                 vec![Cell::Black  , Cell::Unknown, Cell::Unknown]],
     /// };
     ///
     /// let res =
     ///     "   |1  \n".to_string() +
     ///     "   |   \n" +
-    ///     "   |1 2\n" +
+    ///     "   |2 2\n" +
     ///     "---+---\n" +
     ///     "1 1|? #\n" +
     ///     "  1|  #\n" +
+    ///     "  1|#  \n" +
     ///     "  1|#??\n";
-    ///
+    /// println!("{}", picross);
     /// assert!(format!("{}", picross) == res);
     ///
     /// # picross.cells[0][0] = Cell::Black;
-    /// # picross.cells[2][1] = Cell::White;
-    /// # picross.cells[2][2] = Cell::White;
+    /// # picross.cells[3][1] = Cell::White;
+    /// # picross.cells[3][2] = Cell::White;
     /// # assert!(picross.is_valid());
     /// ```
     ///
@@ -116,7 +118,7 @@ impl Display for Picross {
             try!(f.write_str(&line_begin));
             try!(f.write_char('|'));
             for c in &col_spec {
-                try!(f.write_char(c.chars().nth(max_cs_len - i - 1).unwrap_or(' ')));
+                try!(f.write_char(c.chars().nth(i.wrapping_sub(max_cs_len - c.len())).unwrap_or(' ')));
             }
             try!(f.write_char('\n'));
         }
