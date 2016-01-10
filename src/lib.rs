@@ -186,7 +186,7 @@ impl Picross {
     /// ```
     ///
     pub fn set_col(&mut self, col: usize, vals: Vec<Cell>) {
-        for i in 0..self.length {
+        for i in 0..self.height {
             self.cells[i][col] = vals[i];
         }
     }
