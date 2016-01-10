@@ -3,7 +3,7 @@ use std::borrow::Borrow;
 pub mod display;
 
 /// The Cell type
-#[derive(Clone, PartialEq, Debug)]
+#[derive(Clone, Copy, PartialEq, Debug)]
 pub enum Cell {
     Unknown,
     Black,
@@ -135,6 +135,62 @@ pub struct Picross {
 /// - is_valid
 ///
 impl Picross {
+    ///
+    /// Sets row `row` to values `vals`
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use picross::{Picross, Cell};
+    ///
+    /// let mut picross = Picross {
+    ///     height: 3,
+    ///     length: 3,
+    ///     cells: vec![vec![Cell::Black, Cell::Black, Cell::Black],
+    ///                 vec![Cell::Unknown, Cell::Unknown, Cell::White],
+    ///                 vec![Cell::Black, Cell::White, Cell::Black]],
+    ///     row_spec: vec![vec![3], vec![1], vec![1, 1]],
+    ///     col_spec: vec![vec![1, 1], vec![2], vec![1, 1]],
+    /// };
+    ///
+    /// picross.set_row(1, vec![Cell::White, Cell::Black, Cell::White]);
+    ///
+    /// assert!(picross.is_valid());
+    /// ```
+    ///
+    pub fn set_row(&mut self, row: usize, vals: Vec<Cell>) {
+        self.cells[row] = vals;
+    }
+
+    ///
+    /// Sets col `col` to values `vals`
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use picross::{Picross, Cell};
+    ///
+    /// let mut picross = Picross {
+    ///     height: 3,
+    ///     length: 3,
+    ///     cells: vec![vec![Cell::Unknown, Cell::Black, Cell::Black],
+    ///                 vec![Cell::White, Cell::Black, Cell::White],
+    ///                 vec![Cell::Unknown, Cell::White, Cell::Black]],
+    ///     row_spec: vec![vec![3], vec![1], vec![1, 1]],
+    ///     col_spec: vec![vec![1, 1], vec![2], vec![1, 1]],
+    /// };
+    ///
+    /// picross.set_col(0, vec![Cell::Black, Cell::White, Cell::Black]);
+    ///
+    /// assert!(picross.is_valid());
+    /// ```
+    ///
+    pub fn set_col(&mut self, col: usize, vals: Vec<Cell>) {
+        for i in 0..self.length {
+            self.cells[i][col] = vals[i];
+        }
+    }
+
     ///
     /// Transposes the cells
     ///
