@@ -10,6 +10,7 @@ pub enum Cell {
 }
 
 /// A Picross board
+#[derive(Clone, Debug)]
 pub struct Picross {
     /// Height of the board
     pub height: usize,
