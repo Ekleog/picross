@@ -135,6 +135,14 @@ pub struct Picross {
 /// - is_valid
 ///
 impl Picross {
+    pub fn transpose(&self) -> Vec<Vec<Cell>> {
+        (0..self.length).map(|x| {
+            self.cells.iter()
+                      .map(|r| r[x].clone())
+                      .collect::<Vec<Cell>>()
+        }).collect::<Vec<Vec<Cell>>>()
+    }
+
     ///
     /// Checks if a Picross is valid
     ///
@@ -220,21 +228,9 @@ impl Picross {
         }
 
         // Prepare an iterator that iterates over both lines and columns, coupled to specs
-        let iter =
-            // Iterate over rows and its specs
-            self.row_spec.iter().zip(
-                self.cells.iter().cloned()
-            )
-        .chain(
-            // Then iterate over columns and its specs
-            self.col_spec.iter().zip(
-                (0..self.length).map(|x| {
-                    self.cells.iter()
-                              .map(|r| r[x].clone())
-                              .collect::<Vec<Cell>>()
-                })
-            )
-        );
+        let transpose = self.transpose();
+        let iter = self.row_spec.iter().zip(self.cells.iter())
+            .chain(self.col_spec.iter().zip(transpose.iter()));
 
         // Check specs are matched
         for (spec, line) in iter {
@@ -242,9 +238,9 @@ impl Picross {
             let mut size_block = 0;
             for c in line {
                 match c {
-                    Cell::Unknown => return false,
-                    Cell::Black   => size_block += 1,
-                    Cell::White   => {
+                    &Cell::Unknown => return false,
+                    &Cell::Black   => size_block += 1,
+                    &Cell::White   => {
                         if size_block > 0 {
                             if num_block >= spec.len() || size_block != spec[num_block] {
                                 return false;
