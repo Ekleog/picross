@@ -1,5 +1,6 @@
 pub mod display;
 pub mod parse;
+pub mod cache;
 
 /// The Cell type
 #[derive(Clone, Copy, PartialEq, Debug)]
@@ -42,12 +43,16 @@ pub struct Picross {
     /// #               vec![Cell::White, Cell::Black, Cell::Black, Cell::Black]],
     /// #   row_spec: vec![vec![2, 1], vec![3]],
     /// #   col_spec: vec![vec![1], vec![2], vec![1], vec![2]],
+    /// #   possible_rows: vec![],
+    /// #   possible_cols: vec![],
     /// # };
     /// assert_eq!(picross.row_spec, vec![vec![2, 1], vec![3]]);
     /// # assert!(picross.is_valid());
     /// ```
     ///
     pub row_spec: Vec<Vec<usize>>,
+
+    pub possible_rows: Vec<Vec<Vec<Cell>>>,
 
     ///
     /// Specifications for the columns of the board
@@ -80,12 +85,16 @@ pub struct Picross {
     /// #               vec![Cell::Black, Cell::White, Cell::White]],
     /// #   row_spec: vec![vec![1], vec![1], vec![1], vec![1]],
     /// #   col_spec: vec![vec![1, 2], vec![], vec![1]],
+    /// #   possible_rows: vec![],
+    /// #   possible_cols: vec![],
     /// # };
     /// assert_eq!(picross.col_spec, vec![vec![1, 2], vec![], vec![1]]);
     /// # assert!(picross.is_valid());
     /// ```
     ///
     pub col_spec: Vec<Vec<usize>>,
+
+    pub possible_cols: Vec<Vec<Vec<Cell>>>,
 
     ///
     /// Status of the cells of the picross board
@@ -114,6 +123,8 @@ pub struct Picross {
     /// #               vec![Cell::White, Cell::White, Cell::Black]],
     /// #   row_spec: vec![vec![1], vec![1, 1], vec![1]],
     /// #   col_spec: vec![vec![2], vec![], vec![2]],
+    /// #   possible_rows: vec![],
+    /// #   possible_cols: vec![],
     /// # };
     /// assert_eq!(
     ///     picross.cells,
@@ -151,6 +162,8 @@ impl Picross {
     ///                 vec![Cell::Black, Cell::White, Cell::Black]],
     ///     row_spec: vec![vec![3], vec![1], vec![1, 1]],
     ///     col_spec: vec![vec![1, 1], vec![2], vec![1, 1]],
+    ///     possible_rows: vec![],
+    ///     possible_cols: vec![],
     /// };
     ///
     /// picross.set_row(1, vec![Cell::White, Cell::Black, Cell::White]);
@@ -178,6 +191,8 @@ impl Picross {
     ///                 vec![Cell::Unknown, Cell::White, Cell::Black]],
     ///     row_spec: vec![vec![3], vec![1], vec![1, 1]],
     ///     col_spec: vec![vec![1, 1], vec![2], vec![1, 1]],
+    ///     possible_rows: vec![],
+    ///     possible_cols: vec![],
     /// };
     ///
     /// picross.set_col(0, vec![Cell::Black, Cell::White, Cell::Black]);
@@ -207,6 +222,8 @@ impl Picross {
     ///                 vec![Cell::Black, Cell::White, Cell::Black]],
     ///     row_spec: vec![vec![3], vec![1], vec![1, 1]],
     ///     col_spec: vec![vec![1, 1], vec![2], vec![1, 1]],
+    ///     possible_rows: vec![],
+    ///     possible_cols: vec![],
     /// };
     ///
     /// assert_eq!(
@@ -245,6 +262,8 @@ impl Picross {
     ///                 vec![Cell::Black, Cell::White, Cell::Black]],
     ///     row_spec: vec![vec![3], vec![1], vec![1, 1]],
     ///     col_spec: vec![vec![1, 1], vec![2], vec![1, 1]],
+    ///     possible_rows: vec![],
+    ///     possible_cols: vec![],
     /// };
     ///
     /// assert!(picross.is_valid());
@@ -261,6 +280,8 @@ impl Picross {
     ///     cells: vec![vec![Cell::Black]],
     ///     row_spec: vec![vec![1]],
     ///     col_spec: vec![vec![1]],
+    ///     possible_rows: vec![],
+    ///     possible_cols: vec![],
     /// };
     ///
     /// assert!(!picross.is_valid());
@@ -278,6 +299,8 @@ impl Picross {
     ///                 vec![Cell::White, Cell::Black]],
     ///     row_spec: vec![vec![1], vec![2]],
     ///     col_spec: vec![vec![1], vec![1]],
+    ///     possible_rows: vec![],
+    ///     possible_cols: vec![],
     /// };
     ///
     /// assert!(!picross.is_valid());
@@ -295,6 +318,8 @@ impl Picross {
     ///                 vec![Cell::Black, Cell::Black]],
     ///     row_spec: vec![vec![1], vec![2]],
     ///     col_spec: vec![vec![2], vec![2]],
+    ///     possible_rows: vec![],
+    ///     possible_cols: vec![],
     /// };
     ///
     /// assert!(!picross.is_valid());

@@ -153,6 +153,9 @@ impl Picross {
             row_spec: vec![],
             col_spec: vec![],
 
+            possible_rows: vec![],
+            possible_cols: vec![],
+
             cells: vec![],
         };
 

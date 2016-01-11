@@ -84,6 +84,8 @@ impl Display for Picross {
     ///                 vec![Cell::White  , Cell::White  , Cell::Black],
     ///                 vec![Cell::Black  , Cell::White  , Cell::White],
     ///                 vec![Cell::Black  , Cell::Unknown, Cell::Unknown]],
+    ///     possible_rows: vec![],
+    ///     possible_cols: vec![],
     /// };
     ///
     /// let res =
